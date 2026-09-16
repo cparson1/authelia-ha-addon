@@ -1,0 +1,23 @@
+# Default users file, seeded into /data/config/users_database.yml on first
+# run only. The placeholder user below is DISABLED and has no valid
+# password - you must edit the copy on disk (not this file) to add
+# yourself before Authelia is usable.
+#
+# To generate a password hash, run this once Authelia is deployed
+# anywhere with Docker access (does NOT need to be the running add-on
+# container - any machine with Docker works, it's just hashing text):
+#
+#   docker run --rm authelia/authelia:4.39.27 authelia crypto hash generate argon2 --password 'your-real-password'
+#
+# Copy the resulting "$argon2id$..." hash into the "password" field below
+# (edit /data/config/users_database.yml on the HA box, e.g. via the Samba
+# share add-on, then restart the Authelia add-on to pick up the change).
+
+users:
+  changeme:
+    disabled: true
+    displayname: "Change Me"
+    password: "$argon2id$v=19$m=65536,t=3,p=4$c2FsdHNhbHRzYWx0c2FsdA$YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE"
+    email: changeme@parcelisk.net
+    groups:
+      - admins

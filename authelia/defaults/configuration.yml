@@ -1,6 +1,7 @@
-# Default Authelia config, seeded into /data/config/configuration.yml on
+# Default Authelia config, seeded into /config/configuration.yml on
 # first run only (edit the copy on disk after that, not this file -
 # rebuilding the add-on will NOT overwrite an existing configuration.yml).
+# /config is externally visible under /addon_configs/<slug> on the host.
 #
 # Adjust "parcelisk.net" / "auth.parcelisk.net" below if you end up using a
 # different domain or auth subdomain than what we discussed.
@@ -18,7 +19,7 @@ identity_validation:
 
 authentication_backend:
   file:
-    path: '/data/config/users_database.yml'
+    path: '/config/users_database.yml'
     password:
       algorithm: 'argon2'
       argon2:
@@ -57,7 +58,7 @@ regulation:
 
 storage:
   local:
-    path: '/data/db/db.sqlite3'
+    path: '/config/db/db.sqlite3'
 
 notifier:
   # No SMTP configured - password reset links are written to a local file
@@ -65,4 +66,4 @@ notifier:
   # use "forgot password". Switch to an `smtp:` block here if you'd rather
   # get real emails.
   filesystem:
-    filename: '/data/notifications/notification.txt'
+    filename: '/config/notifications/notification.txt'

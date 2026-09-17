@@ -1,26 +1,26 @@
 #!/bin/sh
 # HA add-on entrypoint wrapper for Authelia.
 #
-# Seeds default config/users files and randomly-generated secrets into the
-# add-on's Supervisor-managed persistent /data folder on first run (so they
-# survive rebuilds/updates), then hands off to Authelia's own entrypoint.
+# Seeds default config/users files and randomly-generated secrets into
+# /config on first run. /config is the externally-visible persistent
+# folder for this add-on (via the "addon_config" map option in
+# config.yaml, surfaced under /addon_configs/<slug> on the host and via
+# Samba) - NOT the same as /data, which is always mounted internally but
+# never exposed externally. Using /config is what lets you actually
+# hand-edit configuration.yml/users_database.yml after install.
 set -eu
 
-echo "[run.sh] preparing persistent data directories"
-mkdir -p /data/config /data/secrets /data/db /data/notifications
-# Authelia's own entrypoint.sh chowns /config regardless of whether we
-# actually use it (we point X_AUTHELIA_CONFIG at /data/config instead) -
-# create it so that step doesn't warn about a missing directory.
-mkdir -p /config
+echo "[run.sh] preparing persistent config directory"
+mkdir -p /config/secrets /config/db /config/notifications
 
-if [ ! -f /data/config/configuration.yml ]; then
+if [ ! -f /config/configuration.yml ]; then
     echo "[run.sh] seeding default configuration.yml"
-    cp /defaults/configuration.yml /data/config/configuration.yml
+    cp /defaults/configuration.yml /config/configuration.yml
 fi
 
-if [ ! -f /data/config/users_database.yml ]; then
+if [ ! -f /config/users_database.yml ]; then
     echo "[run.sh] seeding default users_database.yml"
-    cp /defaults/users_database.yml /data/config/users_database.yml
+    cp /defaults/users_database.yml /config/users_database.yml
 fi
 
 generate_secret_file() {
@@ -38,15 +38,15 @@ generate_secret_file() {
     fi
 }
 
-generate_secret_file /data/secrets/jwt_secret
-generate_secret_file /data/secrets/session_secret
-generate_secret_file /data/secrets/storage_encryption_key
+generate_secret_file /config/secrets/jwt_secret
+generate_secret_file /config/secrets/session_secret
+generate_secret_file /config/secrets/storage_encryption_key
 
 echo "[run.sh] handing off to /app/entrypoint.sh"
 
-export X_AUTHELIA_CONFIG=/data/config/configuration.yml
-export AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=/data/secrets/jwt_secret
-export AUTHELIA_SESSION_SECRET_FILE=/data/secrets/session_secret
-export AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE=/data/secrets/storage_encryption_key
+export X_AUTHELIA_CONFIG=/config/configuration.yml
+export AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE=/config/secrets/jwt_secret
+export AUTHELIA_SESSION_SECRET_FILE=/config/secrets/session_secret
+export AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE=/config/secrets/storage_encryption_key
 
 exec /app/entrypoint.sh "$@"

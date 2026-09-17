@@ -1,5 +1,5 @@
 name: "Authelia"
-version: "1.0.0"
+version: "1.0.3"
 slug: "authelia"
 description: "SSO / forward-auth portal (protects apps proxied through NPM)"
 url: "https://github.com/cparson1/authelia-ha-addon"

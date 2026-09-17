@@ -43,7 +43,12 @@ session:
   cookies:
     - domain: 'parcelisk.net'
       authelia_url: 'https://auth.parcelisk.net'
-      default_redirection_url: 'https://auth.parcelisk.net'
+      # default_redirection_url intentionally omitted - it's only used
+      # when someone visits the portal directly without being redirected
+      # there by a protected app, and Authelia rejects setting it equal
+      # to authelia_url (redirecting the login page back to itself).
+      # Point it at a real app (e.g. jotty) later if you want a landing
+      # page for that case.
 
 regulation:
   max_retries: 3

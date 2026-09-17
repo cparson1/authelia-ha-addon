@@ -8,6 +8,10 @@ set -eu
 
 echo "[run.sh] preparing persistent data directories"
 mkdir -p /data/config /data/secrets /data/db /data/notifications
+# Authelia's own entrypoint.sh chowns /config regardless of whether we
+# actually use it (we point X_AUTHELIA_CONFIG at /data/config instead) -
+# create it so that step doesn't warn about a missing directory.
+mkdir -p /config
 
 if [ ! -f /data/config/configuration.yml ]; then
     echo "[run.sh] seeding default configuration.yml"

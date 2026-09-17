@@ -1,5 +1,5 @@
 name: "Authelia"
-version: "1.0.3"
+version: "1.0.4"
 slug: "authelia"
 description: "SSO / forward-auth portal (protects apps proxied through NPM)"
 url: "https://github.com/cparson1/authelia-ha-addon"
@@ -14,3 +14,5 @@ ports:
 ports_description:
   9091/tcp: "Authelia portal / forward-auth API"
 webui: "http://[HOST]:[PORT:9091]"
+map:
+  - data:rw
